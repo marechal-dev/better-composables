@@ -1,47 +1,40 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import { ref } from 'vue';
+import { useMouse } from './composables/mouse';
+import { useTitle, useRefHistory } from '@vueuse/core';
+
+const { x, y } = useMouse();
+const title = useTitle('Green Socks', {
+	titleTemplate: '%s | My Store'
+})
+
+const counter = ref(0);
+const { undo } = useRefHistory(counter, {
+	deep: true,
+});
+
+counter.value++;
+
+console.log(counter.value);
+
+function undoRef() {
+	undo();
+	console.log(counter.value);
+}
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <div class="col">
+		<span>Mouse X: {{ x }}</span>
+		<span>Mouse Y: {{ y }}</span>
+		<button @click="undoRef">Click</button>
+	</div>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.col {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 </style>
